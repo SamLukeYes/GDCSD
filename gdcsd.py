@@ -64,7 +64,7 @@ def install():
         os.system(f'mkdir -p "{install_path}"')
         os.chdir(install_path)
         with open(f'gdcsd.{script_type}', 'w') as script:
-            script.write(f'#!/bin/sh\n{controller} $@ | aria2c -c -d "{dl_dir}" -i -')
+            script.write(f'#!/bin/sh\ndl_dir="{dl_dir}"\n{controller} $@ | aria2c -c -d "$dl_dir" -i -')
         create_controller(controller)
         os.system('chmod +x *')
 
@@ -97,44 +97,80 @@ def init():
 
 
 def how_to_use():
-    print(f'''For the first time, you should run:
-    {sys.argv[0]} init
+    print(f'''USAGE: {sys.argv[0]} <command> [args]
+    
+Commands:
 
-After making sure everything's ready, you can run:
-    {sys.argv[0]} <song_id> [<song_id2> <song_id3> ...]
+    init            Set up the runtime environment
+    dl              Download songs by ID and store them in GD's custom song directory
+    help            Display this message
+    
+    Other commands: Run a shell command in GD's custom song directory (not available on Windows)
     ''')
-    sys.exit(1)
+    #sys.exit(1)
+
+def dl(args):
+
+    argstr = ''
+    for id in args:
+        if id.isdigit():
+            argstr += f'{id} '
+        else:
+            #print(f'Invalid argument: {id}\n')
+            #how_to_use()
+            #sys.exit(1)
+            raise ValueError(f'invalid song ID {id}')
+
+    exit_code = os.system(f'{install_path}/gdcsd.{script_type} {argstr}')
+    if exit_code:
+        
+        #sys.exit(exit_code)
+        return exit_code
+
+    for id in args:
+        target = f'{dl_dir}/{id}.mp3'
+        try:
+            with open(target) as f:
+                f.read()
+            #os.remove(target)
+            print(f'{id}.mp3 doesn\'t seem to be a valid mp3 file.')
+            print(f'Try visiting https://newgrownds.com/audio/listen/{id} to download it manually.')
+        except UnicodeDecodeError:
+            pass
+
+    return 0
 
 if __name__ == '__main__':
 
-    if 'init' in sys.argv:
+    if len(sys.argv) < 2:
+        how_to_use()
+        sys.exit(1)
+
+    elif sys.argv[1] == 'init':
         init()
 
-    elif len(sys.argv) >= 2 and os.path.isdir(install_path):
-
-        args = ''
-        for id in sys.argv[1:]:
-            if id.isdigit():
-                args += f'{id} '
-            else:
-                print(f'Invalid argument: {id}\n')
-                how_to_use()
-
-        exit_code=os.system(f'{install_path}/gdcsd.{script_type} {args}')
-        if exit_code:
-            sys.exit()
-
-        for id in sys.argv[1:]:
-            target = f'{dl_dir}/{id}.mp3'
-            try:
-                with open(target) as f:
-                    f.read()
-                os.remove(target)
-                print(f'Song ID {id} doesn\'t seem to have a direct link.')
-                print(f'Try visiting https://newgrownds.com/audio/listen/{id} to download it manually.')
-            except UnicodeDecodeError:
-                pass
-
-    else:
+    elif sys.argv[1] in ('help', '-h', '--help', '-?' '/help', '/h', '/?'):
         how_to_use()
 
+    elif not os.path.isfile(f'{install_path}/gdcsd.{script_type}'):
+        print(f'Please run "{sys.argv[0]} init" first.')
+
+    elif sys.argv[1] == 'dl':
+        if dl(sys.argv[2:]):
+            print(f'Command failed for unknown reason. Run "{sys.argv[0]} init" to fix it?')
+
+    elif platform.system == 'Windows':
+        print('Custom command is not yet available on Windows.')
+
+    else:
+        with open(f'{install_path}/gdcsd.sh') as script:
+            target = 'dl_dir='
+            for line in script:
+                if line.startswith(target):
+                    dl_dir = line[len(target):-1].replace('"', '')
+                    #break
+        os.chdir(dl_dir)
+        cmd = ''
+        for arg in sys.argv[1:]:
+            cmd += f'{arg} '
+        sys.exit(os.system(cmd))
