@@ -23,6 +23,22 @@ The shell script will be invoked for downloading and executing shell commands. I
         
         Other commands: Run a shell command in GD's custom song directory (not available on Windows)
 
+## Device for testing
+    System:
+    Kernel: 5.8.1-arch1-2-surface x86_64 bits: 64 compiler: N/A 
+    parameters: initrd=\intel-ucode.img initrd=\initramfs-linux-surface.img 
+    root=LABEL=root rw 
+    Desktop: GNOME 3.36.5 tk: GTK 3.24.22 wm: gnome-shell dm: GDM 3.36.3 
+    Distro: Manjaro Linux 
+    Machine:
+    Type: Laptop System: Microsoft product: Surface Pro 6 
+    v: 124000000000000000000000D:0B:13F:5C:10P:38S:01E:0 serial: <filter> 
+    Chassis: type: 9 serial: <filter> 
+    Mobo: Microsoft model: Surface Pro 6 serial: <filter> UEFI: Microsoft 
+    v: 235.3192.768 date: 03.24.2020 
+
+My Windows 10 was broken and I don't plan to reinstall it, so... this program is not yet tested on real Windows. In addition, I haven't managed to make Aria2 work in Wine, so it is not fully tested with Wine either. 
+
 ## Missing features
 * GUI
 * Checking duplicate song
