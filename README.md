@@ -9,7 +9,7 @@ For the first time to run or after an upgrade, please execute:
     chmod +x ./gdcsd.py  #for non-Windows users
     ./gdcsd.py init
 
-Then the Python script will install `gdcsd.sh` and `controller.py` to `~/.local/share/gdcsd`. On Windows, there'll be `gdcsd.cmd` and `controller.py` in your user directory instead.
+Then the Python script will install `gdcsd.sh` and `controller.py` to `~/.local/share/gdcsd`. On Windows, there'll be `gdcsd.cmd` and `controller.py` in the default download directory of GD instead.
 
 The shell script will be invoked for downloading and executing shell commands. I expect it to run out of box, but I haven't tested it on other devices, so please check them before downloading. If it doesn't work out of box on your device, please open an issue to discuss it.
 
@@ -37,11 +37,14 @@ The shell script will be invoked for downloading and executing shell commands. I
     Mobo: Microsoft model: Surface Pro 6 serial: <filter> UEFI: Microsoft 
     v: 235.3192.768 date: 03.24.2020 
 
-My Windows 10 was broken and I don't plan to reinstall it, so... this program is not yet tested on real Windows. In addition, I haven't managed to make Aria2 work in Wine, so it is not fully tested with Wine either. 
+~~My Windows 10 was broken and I don't plan to reinstall it, so... this program is not yet tested on real Windows. In addition, I haven't managed to make Aria2 work in Wine, so it is not fully tested with Wine either.~~
+
+I've also set up a Windows 10 VM with GNOME Boxes for testing, but I failed to run GD in the VM, so I can only test without GD in it.
 
 ## Missing features
 * GUI
-* Checking duplicate song
+* Checking duplicated song
+* Checking if the download directory is correct
 * Downloading songs which don't have direct link, such as *Starchaser (ID: 689891)* -- it can be downloaded in the latest Geometry Dash, but I don't know how RubRub solved this problem
 * Executing DOS commands on Windows
 * Mobile device support

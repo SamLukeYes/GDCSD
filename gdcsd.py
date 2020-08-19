@@ -22,16 +22,16 @@ import sys, os, platform, time
 home = os.path.expanduser('~')
 #install_path = f'{home}/.local/share/gdcsd'
 url = 'https://newgrounds.com/audio/download/'
-dl_dir = 'Local Settings/Application Data/GeometryDash'
 
 if platform.system() == 'Windows':
     script_type = 'cmd'
-    install_path = home
-    dl_dir = f'{home}/{dl_dir}'
+    #install_path = home
+    dl_dir = f'{home}/AppData/Local/GeometryDash'
+    install_path = dl_dir
 else:
     script_type = 'sh'
     install_path = f'{home}/.local/share/gdcsd'
-    dl_dir = f'{home}/.local/share/Steam/steamapps/compatdata/322170/pfx/drive_c/users/steamuser/{dl_dir}'
+    dl_dir = f'{home}/.local/share/Steam/steamapps/compatdata/322170/pfx/drive_c/users/steamuser/Local Settings/Application Data/GeometryDash'
 
 # def detect_downloader():
 
@@ -56,7 +56,7 @@ def install():
     if platform.system() == 'Windows':
         os.system(f'mkdir /p "{install_path}"')
         with open(f'{install_path}/gdcsd.{script_type}', 'w') as script:
-            script.write(f'python {controller} %* > "{install_path}/ngdl.lst"\naria2c -c -d "{dl_dir}" -i "{install_path}/ngdl.lst"')
+            script.write(f'python {controller} %* > "{install_path}/ngdl.lst"\naria2c -c -d {dl_dir} -i "{install_path}/ngdl.lst"')
         #os.system(f'setx path %path%;{install_path}')
         create_controller(controller)
 
