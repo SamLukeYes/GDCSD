@@ -2,8 +2,6 @@
 A program aiming to accelerate Geometry Dash custom song downloading using Aria2
 
 ## How to use
-**NOTE: dev branch may contain incomplete features. Please only use master branch, except for development use.**
-
 Before running GDCSD, please make sure you have installed [Python](https://python.org) (tested on 3.7 and 3.8) and [Aria2](https://aria2.github.io). If you're using Windows, you might need to add the absolute paths of `aria2c.exe` and `python.exe` to `PATH`.
 
     USAGE: python gdcsd.py <command> [args]
