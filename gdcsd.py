@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 copyright_msg = '''Geometry Dash Custom Song Downloader
 Copyright (c) 2020 Sam L. Yes
