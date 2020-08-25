@@ -20,11 +20,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 home_url = "https://github.com/SamLukeYes/GDCSD"
 
 import os, platform, time, sys
+from urllib.request import urlopen
 
 home = os.path.expanduser('~')
 dl_config = f'{home}/.gdcsd_dl_dir'
-cache_dir = f'{home}/.cache/gdcsd'
-tmp_dir = f'{cache_dir}/tmp'
+#cache_dir = f'{home}/.cache/gdcsd'
+#tmp_dir = f'{cache_dir}/tmp'
 
 def get_dl_dir():
     if os.path.isfile(dl_config):   # if not exist, fall back to default
@@ -44,10 +45,11 @@ Defined commands:
     dl              Download songs by ID and store them in custom song download directory
     set             Set custom song download directory, recommended to be the same as GD's
     reset           Reset custom song download directory to default
-    clean           Clean song info cache
     help            Display this message
     
 Other commands: Execute a system command in custom song download directory.
+
+If any problems, feel free to open an issue at <{home_url}/issues>.
 ''')
 
 def set_dl_dir(dir:str):
@@ -87,16 +89,39 @@ def rmdir(target_dir:str):
         return os.system(f'rm -rf "{target_dir}"')
 
 def multi_dl(targets:dict, outdir:str):
+    if platform.system() == 'Windows':
+        tmp_dir = f'{home}/Temp/gdcsd'
+    else:
+        tmp_dir = '/tmp/gdcsd'
     mkdir(tmp_dir)
-    ctrl_file = f'{tmp_dir}/{time.time()}'
-    ctrl = ''
+    control_file = f'{tmp_dir}/{time.time()}'
+    control = ''
     for file_name in targets:
-        ctrl += f'{targets[file_name]}\n out={file_name}\n'
-    with open(ctrl_file, 'w') as f:
-        f.write(ctrl)
-    code = os.system(f'aria2c -c -d "{outdir}" -i "{ctrl_file}"')
-    os.remove(ctrl_file)
+        control += f'{targets[file_name]}\n out={file_name}\n'
+    with open(control_file, 'w') as f:
+        f.write(control)
+    code = os.system(f'aria2c -c -d "{outdir}" -i "{control_file}"')
+    os.remove(control_file)
     return code
+
+def get_url(id):
+    target = 'embedController([{"url":"'
+    with urlopen(f'https://www.newgrounds.com/audio/listen/{id}') as f:
+        for i in f:
+            line = str(i)
+            if target in line:
+                for j in line.split():
+                    if target in j:
+                        url=''
+                        for k in str(j[len(target):]):
+                            if k == '\\':
+                                continue
+                            if k == '?':
+                                return url
+                            else:
+                                url += k
+                        
+                
 
 def dl(IDs:list):
 
@@ -107,43 +132,45 @@ def dl(IDs:list):
     # mkdir(work_dir)
     # os.chdir(work_dir)
 
-    print('Fetching song info...')
-    api_targets = dict()
-    existing = os.listdir(cache_dir) if os.path.isdir(cache_dir) else []
-    for id in IDs:
-        if id in existing:
-            continue
-        elif id.isdigit():
-            api_targets[id] = f'https://api.newgrounds.app/details.php?url=https://www.newgrounds.com/audio/listen/{id}'
-        else:
-            raise ValueError(f'song ID {id} is invalid')
-    code = multi_dl(api_targets, cache_dir)
-    if code:
-        print('Failed to fetch song info.')
-        #rmdir(work_dir)
-        return code
+    # print('Fetching song info...')
+    # api_targets = dict()
+    # existing = os.listdir(cache_dir) if os.path.isdir(cache_dir) else []
+    # for id in IDs:
+    #     if id in existing:
+    #         continue
+    #     elif id.isdigit():
+    #         api_targets[id] = f'https://api.newgrounds.app/details.php?url=https://www.newgrounds.com/audio/listen/{id}'
+    #     else:
+    #         raise ValueError(f'song ID {id} is invalid')
+    # code = multi_dl(api_targets, cache_dir)
+    # if code:
+    #     print('Failed to fetch song info.')
+    #     #rmdir(work_dir)
+    #     return code
     
-    print('Starting download...')
+    # print('Starting download...')
     mp3_targets = dict()
     for id in IDs:
-        url = None
-        data = open(f'{cache_dir}/{id}').read().split()
-        for i in range(len(data)):
-            if data[i] == '"media":':
-                url = data[i+1].replace('"', '').replace('\\', '')
+        # url = None
+        # data = open(f'{cache_dir}/{id}').read().split()
+        # for i in range(len(data)):
+        #     if data[i] == '"media":':
+        #         url = data[i+1].replace('"', '').replace('\\', '')
+        if id.isdigit():
+            url = get_url(id)
+        else:
+            raise ValueError(f'song ID {id} is invalid')
         if url:
             mp3_targets[f'{id}.mp3'] = url
         else:
-            print(f'Failed to get download URL of {id}. Skipping.')
-            print(f"Maybe the cache is corrupted. Try '{sys.argv[0]} clean' to fix it.")
-            print(f"If it doesn't help, feel free to open an issue at {home_url}/issues")
-            time.sleep(3)
+            print(f'Failed to get download URL of {id}.')
+            sys.exit(1)
     code = multi_dl(mp3_targets, dl_dir)
     #rmdir(work_dir)
     return code
 
-def clean():
-    rmdir(cache_dir)
+# def clean():
+#     rmdir(cache_dir)
 
 def reset():
     if os.path.isfile(dl_config):
@@ -152,7 +179,7 @@ def reset():
 
 def info():
     print(copyright_msg)
-    print(f'Home page: {home_url}\n')
+    print(f'Home page: <{home_url}>\n')
     print(f'Custom song download directory: {dl_dir}\n')
 
 if __name__ == '__main__':
@@ -178,8 +205,8 @@ if __name__ == '__main__':
             sys.exit(1)
         set_dl_dir(sys.argv[2])
 
-    elif sys.argv[1] == 'clean':
-        clean()
+    # elif sys.argv[1] == 'clean':
+    #     clean()
 
     elif sys.argv[1] == 'reset':
         reset()

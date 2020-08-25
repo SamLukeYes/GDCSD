@@ -26,7 +26,6 @@ Download a 32-bit release of Aria2 [here](https://github.com/aria2/aria2/release
         dl              Download songs by ID and store them in custom song download directory
         set             Set custom song download directory, recommended to be the same as GD's
         reset           Reset custom song download directory to default
-        clean           Clean song info cache
         help            Display this message
         
     Other commands: Execute a system command in custom song download directory.
