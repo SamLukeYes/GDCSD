@@ -13,6 +13,8 @@ Download a 32-bit release of Aria2 [here](https://github.com/aria2/aria2/release
 #### Arch-based distributions
     yay -S gdcsd-git
 #### Other distributions
+Make sure `aria2` is installed, and then
+
     git clone https://github.com/SamLukeYes/GDCSD
     sudo install -m755 GDCSD/gdcsd.py /usr/local/bin/gdcsd
 

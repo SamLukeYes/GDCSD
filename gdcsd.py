@@ -220,3 +220,5 @@ if __name__ == '__main__':
         code = os.system(join_args(sys.argv[1:]))
         if code:
             print(f"Run '{sys.argv[0]} help' for help message.")
+            print(code)
+            sys.exit(code)
