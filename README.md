@@ -3,20 +3,17 @@ A program aiming to accelerate Geometry Dash custom song downloading using Aria2
 
 ## Installation
 ### Windows
-#### 64-bit
-Download the [release](https://github.com/SamLukeYes/GDCSD/releases/tag/20200821), extract it to any directory you like, and then add the directory to `PATH`.
-
-#### 32-bit
-Download a 32-bit release of Aria2 [here](https://github.com/aria2/aria2/releases) and add it to `PATH`. Install Python (3.6 or higher). You can choose to run `gdcsd.py` with Python (replace `gdcsd` command with `python path/to/gdcsd.py`), or compile it with PyInstaller and add it to `PATH`.
+Download the [binary release](https://github.com/SamLukeYes/GDCSD/releases), extract it to any directory you like, and then add the directory to `PATH`.
+You might also need [VCRUNTIME140](https://www.microsoft.com/en-us/download/details.aspx?id=52685) to run GDCSD binary. Remember to choose the x86 build.
 
 ### Linux
 #### Arch-based distributions
-    yay -S gdcsd-git
+    $ yay -S gdcsd-git
 #### Other distributions
 Make sure `aria2` is installed, and then
 
-    git clone https://github.com/SamLukeYes/GDCSD
-    sudo install -m755 GDCSD/gdcsd.py /usr/local/bin/gdcsd
+    $ git clone https://github.com/SamLukeYes/GDCSD
+    # install -m755 GDCSD/gdcsd.py /usr/local/bin/gdcsd
 
 ## How to use
 

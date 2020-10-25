@@ -24,8 +24,6 @@ from urllib.request import urlopen
 
 home = os.path.expanduser('~')
 dl_config = f'{home}/.gdcsd_dl_dir'
-#cache_dir = f'{home}/.cache/gdcsd'
-#tmp_dir = f'{cache_dir}/tmp'
 
 def get_dl_dir():
     if os.path.isfile(dl_config):   # if not exist, fall back to default
@@ -71,13 +69,14 @@ def join_args(arg_list:list):
 def check_dl_dir():
     if not os.path.isdir(dl_dir):
         print(f"Error: {dl_dir} not exist")
-        print(f"Please run '{sys.argv[0]} set-dl-dir <YOUR_GD_CUSTOM_SONG_PATH>'")
+        print(f"Please run '{sys.argv[0]} set <YOUR_GD_CUSTOM_SONG_PATH>'")
         sys.exit(1)
 
 def mkdir(target_dir:str):
     if not os.path.isdir(target_dir):
         if platform.system() == 'Windows':
-            return os.system(f'powershell mkdir -p "{target_dir}"')
+            target_dir = target_dir.replace("/", "\\")
+            return os.system(f'mkdir "{target_dir}"')
         else:
             return os.system(f'mkdir -p "{target_dir}"')
     return 0
@@ -128,34 +127,10 @@ def dl(IDs:list):
     # NOTE: always use sys.exit() when invoking
 
     check_dl_dir()
-    # work_dir = f'{tmp_dir}/{time.time()}'
-    # mkdir(work_dir)
-    # os.chdir(work_dir)
-
-    # print('Fetching song info...')
-    # api_targets = dict()
-    # existing = os.listdir(cache_dir) if os.path.isdir(cache_dir) else []
-    # for id in IDs:
-    #     if id in existing:
-    #         continue
-    #     elif id.isdigit():
-    #         api_targets[id] = f'https://api.newgrounds.app/details.php?url=https://www.newgrounds.com/audio/listen/{id}'
-    #     else:
-    #         raise ValueError(f'song ID {id} is invalid')
-    # code = multi_dl(api_targets, cache_dir)
-    # if code:
-    #     print('Failed to fetch song info.')
-    #     #rmdir(work_dir)
-    #     return code
     
-    # print('Starting download...')
+    print('Preparing to download...')
     mp3_targets = dict()
     for id in IDs:
-        # url = None
-        # data = open(f'{cache_dir}/{id}').read().split()
-        # for i in range(len(data)):
-        #     if data[i] == '"media":':
-        #         url = data[i+1].replace('"', '').replace('\\', '')
         if id.isdigit():
             url = get_url(id)
         else:
@@ -168,9 +143,6 @@ def dl(IDs:list):
     code = multi_dl(mp3_targets, dl_dir)
     #rmdir(work_dir)
     return code
-
-# def clean():
-#     rmdir(cache_dir)
 
 def reset():
     if os.path.isfile(dl_config):
@@ -201,7 +173,7 @@ if __name__ == '__main__':
 
     elif sys.argv[1] == 'set':
         if len(sys.argv) == 2:
-            print(f'USAGE: {sys.argv[0]} set-dl-dir <CUSTOM_SONG_PATH>')
+            print(f'USAGE: {sys.argv[0]} set <CUSTOM_SONG_PATH>')
             sys.exit(1)
         set_dl_dir(sys.argv[2])
 
