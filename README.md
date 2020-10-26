@@ -3,8 +3,9 @@ A program aiming to accelerate Geometry Dash custom song downloading using Aria2
 
 ## Installation
 ### Windows
-Download the [binary release](https://github.com/SamLukeYes/GDCSD/releases), extract it to any directory you like, and then add the directory to `PATH`.
-You might also need [VCRUNTIME140](https://www.microsoft.com/en-us/download/details.aspx?id=52685) to run GDCSD binary. Remember to choose the x86 build.
+Download the [binary release](https://github.com/SamLukeYes/GDCSD/releases), extract it to any directory you like, and then add the directory to `PATH`. If you already have another `aria2c.exe` installed in your `PATH`, you can delete the one packaged with GDCSD safely.
+
+You might also need [VCRUNTIME140](https://www.microsoft.com/en-us/download/details.aspx?id=52685) to run GDCSD binary. Remember to choose x86 build.
 
 ### Linux
 #### Arch-based distributions
