@@ -1,13 +1,15 @@
 # Geometry Dash Custom Song Downloader
-A program aiming to accelerate Geometry Dash custom song downloading using Aria2
+A script aiming to accelerate Geometry Dash custom song downloading using [Aria2](http://aria2.github.io)
 
 ## Installation
 ### Windows
-Download the [binary release](https://github.com/SamLukeYes/GDCSD/releases), extract it to any directory you like, and then add the directory to `PATH`. If you already have another `aria2c.exe` installed in your `PATH`, you can delete the one packaged with GDCSD safely.
+The binary releases for Windows are not maintained currently, because I only use GDCSD on Linux and don't want to test it on Windows. To use it on Windows, you are on your own to get the Python script work. Pull requests for Windows compatability are welcomed.
 
 ### Linux
 #### Arch-based distro
+
     $ yay -S gdcsd-git
+
 #### Other distro
 
     $ git clone https://github.com/SamLukeYes/GDCSD
@@ -15,15 +17,13 @@ Download the [binary release](https://github.com/SamLukeYes/GDCSD/releases), ext
 
 ## How to use
 
-    USAGE: gdcsd <command> [args]
+    USAGE: gdcsd <subcommand> [args]
         
-    Defined commands:
+    Subcommands:
 
         info            Display copyright infomation
         dir             Print the current download directory
-        dl              Download songs by ID and store them in custom song download directory
-        set             Set custom song download directory, recommended to be the same as GD's
+        dl              Download songs to custom song download directory
+        set             Set custom song download directory
         reset           Reset custom song download directory to default
         help            Display this message
-        
-    Other commands: Execute a system command in custom song download directory.

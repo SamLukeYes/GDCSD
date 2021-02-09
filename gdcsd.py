@@ -15,9 +15,8 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
-'''
 
-home_url = "https://github.com/SamLukeYes/GDCSD"
+Home Page: <https://github.com/SamLukeYes/GDCSD>'''
 
 import os, platform, time, sys
 from urllib.request import urlopen
@@ -37,18 +36,16 @@ def get_dl_dir():
 dl_dir = get_dl_dir()
 
 def usage():
-    print(f'''USAGE: {sys.argv[0]} <command> [args]
+    print(f'''USAGE: {sys.argv[0]} <subcommand> [args]
     
-Defined commands:
+Subcommands:
 
     info            Display copyright infomation
     dir             Print the current download directory
-    dl              Download songs by ID and store them in custom song download directory
-    set             Set custom song download directory, recommended to be the same as GD's
+    dl              Download songs to custom song download directory
+    set             Set custom song download directory
     reset           Reset custom song download directory to default
-    help            Display this message
-
-If any problems, feel free to open an issue at <{home_url}/issues>.''')
+    help            Display this message''')
 
 def set_dl_dir(dir:str):
     check_dl_dir(dir)
@@ -154,7 +151,6 @@ if __name__ == '__main__':
 
     elif sys.argv[1] == 'info':
         print(copyright_msg)
-        print(f'Home page: <{home_url}>\n')
 
     elif sys.argv[1] == 'dir':
         print(dl_dir)
