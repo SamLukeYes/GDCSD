@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 
 copyright_msg = '''Geometry Dash Custom Song Downloader
-Copyright (c) 2020 Sam L. Yes
+Copyright (c) 2020-2021 Sam L. Yes
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -34,26 +34,24 @@ def get_dl_dir():
         # for any other platform that uses Proton to run GD
         return f'{home}/.local/share/Steam/steamapps/compatdata/322170/pfx/drive_c/users/steamuser/Local Settings/Application Data/GeometryDash'
 
+dl_dir = get_dl_dir()
+
 def usage():
     print(f'''USAGE: {sys.argv[0]} <command> [args]
     
 Defined commands:
 
-    info            Display copyright infomation and current download directory
+    info            Display copyright infomation
+    dir             Print the current download directory
     dl              Download songs by ID and store them in custom song download directory
     set             Set custom song download directory, recommended to be the same as GD's
     reset           Reset custom song download directory to default
     help            Display this message
-    
-Other commands: Execute a system command in custom song download directory.
 
-If any problems, feel free to open an issue at <{home_url}/issues>.
-''')
+If any problems, feel free to open an issue at <{home_url}/issues>.''')
 
 def set_dl_dir(dir:str):
-    if not os.path.isdir(dir):
-        print(f'Invalid path: {dir}')
-        sys.exit(1)
+    check_dl_dir(dir)
     path = os.path.abspath(dir)
     #print(f'Writing to {dl_config}')
     with open(dl_config, 'w') as f:
@@ -66,13 +64,12 @@ def join_args(arg_list:list):
         args += arg + ' '
     return args[:-1]
 
-def check_dl_dir():
-    if not os.path.isdir(dl_dir):
-        print(f"Error: {dl_dir} not exist")
-        print(f"Please run '{sys.argv[0]} set <YOUR_GD_CUSTOM_SONG_PATH>'")
+def check_dl_dir(dir=dl_dir):
+    if not os.path.isdir(dir):
+        print(f'Invalid path: {dir}')
         sys.exit(1)
 
-def mkdir(target_dir:str):
+def mkdir(target_dir:str) -> int:
     if not os.path.isdir(target_dir):
         if platform.system() == 'Windows':
             target_dir = target_dir.replace("/", "\\")
@@ -81,13 +78,13 @@ def mkdir(target_dir:str):
             return os.system(f'mkdir -p "{target_dir}"')
     return 0
 
-def rmdir(target_dir:str):
+def rmdir(target_dir:str) -> int:
     if platform.system() == 'Windows':
         return os.system(f'rmdir /s /q "{target_dir}"')
     else:
         return os.system(f'rm -rf "{target_dir}"')
 
-def multi_dl(targets:dict, outdir:str):
+def multi_dl(targets:dict, outdir:str) -> int:
     if platform.system() == 'Windows':
         tmp_dir = f'{home}/Temp/gdcsd'
     else:
@@ -122,7 +119,7 @@ def get_url(id):
                         
                 
 
-def dl(IDs:list):
+def dl(IDs:list) -> int:
 
     # NOTE: always use sys.exit() when invoking
 
@@ -149,21 +146,18 @@ def reset():
         os.remove(dl_config)
     print(f'Custom song download directory set to {get_dl_dir()}')
 
-def info():
-    print(copyright_msg)
-    print(f'Home page: <{home_url}>\n')
-    print(f'Custom song download directory: {dl_dir}\n')
-
 if __name__ == '__main__':
-
-    dl_dir = get_dl_dir()
 
     if len(sys.argv) < 2:
         usage()
         sys.exit(1)
 
     elif sys.argv[1] == 'info':
-        info()
+        print(copyright_msg)
+        print(f'Home page: <{home_url}>\n')
+
+    elif sys.argv[1] == 'dir':
+        print(dl_dir)
 
     elif sys.argv[1] == 'dl':
         if len(sys.argv) == 2:
@@ -187,10 +181,14 @@ if __name__ == '__main__':
         usage()
 
     else:
-        check_dl_dir()
-        os.chdir(dl_dir)
-        code = os.system(join_args(sys.argv[1:]))
-        if code:
-            print(f"Run '{sys.argv[0]} help' for help message.")
-            print(code)
-            sys.exit(code)
+        usage()
+        sys.exit(1)
+
+        # DEPRECATED: run any commands in dl_dir
+        # check_dl_dir()
+        # os.chdir(dl_dir)
+        # code = os.system(join_args(sys.argv[1:]))
+        # if code:
+        #     print(f"Run '{sys.argv[0]} help' for help message.")
+        #     print(code)
+        #     sys.exit(code)
